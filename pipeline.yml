@@ -1,0 +1,85 @@
+name: SandBox Logic Monitor Collector $(Date:yyyyMMdd)$(rev:.r)
+
+resources:
+  repositories:
+    - repository: tf_modules
+      type: git
+      name: PSCloudModules/TerraformModules
+      ref: master
+
+    - repository: yml_modules
+      type: git
+      name: PSCloudModules/PipelineTemplates
+      ref: develop
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - develop
+      - master
+
+pool: terraform12-pool
+
+stages:
+  - stage: validate
+    displayName: Validate
+    jobs:
+      - job: validate_npd
+        displayName: Validate Non-Production
+        condition: eq(variables['Build.Reason'], 'PullRequest')
+        variables:
+          - group: TF Non-Prod
+          - name: env
+            value: npd
+        steps:
+          - checkout: self
+          - checkout: tf_modules
+          - checkout: yml_modules
+
+          - template: terraform.validate.yml@yml_modules
+            parameters:
+              working_dir: $(Build.SourcesDirectory)/$(Build.Repository.Name)
+              env: ${{ variables['env'] }}
+              core: false
+              env_vars:
+                arm_client_id: $(arm_client_id)
+                arm_client_secret: $(arm_client_secret)
+                arm_tenant_id: $(arm_tenant_id)
+                arm_subscription_id: $(arm_subscription_id)
+                arm_access_key: $(arm_access_key)
+
+
+
+  - stage: npd
+    displayName: Deploy Non-Production  
+    condition: and(succeeded(), and(ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))))
+    dependsOn: []
+    jobs:
+      - deployment: npd
+        variables:
+          - group: TF Non-Prod
+          - name: env
+            value: npd
+        environment: LogicMonitor-Sandbox
+        displayName: Deploy LogicMonitor Sandbox
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - checkout: tf_modules
+                - checkout: yml_modules
+
+                - template: terraform.build.yml@yml_modules
+                  parameters:
+                    working_dir: $(Build.SourcesDirectory)/$(Build.Repository.Name)
+                    env: ${{ variables['env'] }}
+                    output: false
+                    core: false
+                    env_vars:
+                      arm_client_id: $(arm_client_id)
+                      arm_client_secret: $(arm_client_secret)
+                      arm_tenant_id: $(arm_tenant_id)
+                      arm_subscription_id: $(arm_subscription_id)
+                      arm_access_key: $(arm_access_key)
