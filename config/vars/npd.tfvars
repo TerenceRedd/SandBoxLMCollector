@@ -2,16 +2,16 @@ Tags = {
     Project                     = "LogicMonitor"
     App                         = "logicmonitor"
     Contact = {
-        Name                    = "CloudOps"
-        Email                   = "CloudOps@britinsurance.com"
+        Name                    = "Terence"
+        Email                   = "altostratus@gmx.co.uk"
     }
-    Costcentre                  = "N37"
+    Costcentre                  = "None"
     Description                 = "Sandbox LM Collector"
-    Repo                        = "britgroupservices/BluePrints/Sandbox-LM-Collector"
+    Repo                        = "dev.azure.com/AltostratusUK/_git/LogicMonitorCollector"
     BusinessName                = "LogicMonitor"
 }
 
-Location                        = "UK South"
+Location                        = "East US"
 
 vmcollection1 = {
     Size                        = "Standard_B2ms"
@@ -28,12 +28,12 @@ vmcollection1 = {
 
 Network = {
     RouteTable = {
-        Name                    = "platform-rt-uks-nonprod"
-        ResourceGroup           = "platform-rg-uks-nonprod"
+        Name                    = "TRRouteTable"
+        ResourceGroup           = "newterraformrg"
     }
     Vnet = {
-        Name                    = "platform-vnet01-uks-nonprod"
-        ResourceGroup           = "platform-rg-uks-nonprod"
+        Name                    = "TRVnet"
+        ResourceGroup           = "newterraformrg"
     }
     Subnet                      = ["10.9.27.0/27"]
     Nsg = {
@@ -52,12 +52,12 @@ Network = {
 
 KeyVault = {
     Domain = {
-        Name                    = "platform-kv-uks-nonprod"
-        ResourceGroup           = "platform-rg-uks-nonprod"
-        Key                     = "DomainJoin"
+        Name                    = "newterraformrg"
+        ResourceGroup           = "keyvaultresourcegroup"
+        Key                     = "Password"
     }
     Admin = {
-        Name                    = "platform-kv-uks-nonprod"
-        ResourceGroup           = "platform-rg-uks-nonprod"
+        Name                    = "AzureADAdmin"
+        ResourceGroup           = "pkeyvaultresourcegroup"
     }
 }

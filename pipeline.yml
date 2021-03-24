@@ -1,4 +1,4 @@
-name: SandBox Logic Monitor Collector $(Date:yyyyMMdd)$(rev:.r)
+name: LogicMonitor $(Date:yyyyMMdd)$(rev:.r)
 
 resources:
   repositories:
@@ -19,7 +19,7 @@ trigger:
       - develop
       - master
 
-pool: terraform12-pool
+pool: Default
 
 stages:
   - stage: validate
