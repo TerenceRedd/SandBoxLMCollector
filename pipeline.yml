@@ -10,7 +10,7 @@ resources:
     - repository: yml_modules
       type: git
       name: PSCloudModules/PipelineTemplates
-      ref: develop
+      
 
 trigger:
   batch: true
